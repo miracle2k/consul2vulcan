@@ -1,0 +1,16 @@
+#!/bin/sh
+VULCAN=vulcand
+
+echo "Updating {{timestamp}}"
+
+{{range services}}
+curl -L -X PUT "http://$ETCD/v2/keys/$VULCAN/backends/{{.Name}}/backend?ttl=$TTL" -d value="{\"Type\": \"http\"}"
+{{range service .Name}}
+curl -L -X PUT "http://$ETCD/v2/keys/$VULCAN/backends/{{.Name}}/servers/{{.ID}}?ttl=$TTL" -d value="{\"URL\": \"http://{{.Address}}:{{.Port}}\"}"{{end}}
+{{end}}
+
+
+if [ $? -ne 0 ]; then
+    echo "There was a problem writing to etcd"
+fi
+exit 0
