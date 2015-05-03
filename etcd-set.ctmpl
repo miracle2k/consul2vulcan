@@ -1,13 +1,12 @@
 #!/bin/sh
-VULCAN=vulcand
+
+export TTL=60
+# Expects ETCD to be defined
 
 echo "Updating {{timestamp}}"
 
 {{range services}}
-curl -L -X PUT "http://$ETCD/v2/keys/$VULCAN/backends/{{.Name}}/backend?ttl=$TTL" -d value="{\"Type\": \"http\"}"
-{{range service .Name}}
-curl -L -X PUT "http://$ETCD/v2/keys/$VULCAN/backends/{{.Name}}/servers/{{.ID}}?ttl=$TTL" -d value="{\"URL\": \"http://{{.Address}}:{{.Port}}\"}"{{end}}
-{{end}}
+./multiset {{range service .Name}} "{{.Name}}=http://{{.Address}}:{{.Port}}"{{end}}{{end}}
 
 
 if [ $? -ne 0 ]; then
