@@ -3,10 +3,9 @@
 export TTL=60
 # Expects ETCD to be defined
 
-echo "Updating {{timestamp}}"
+echo "Writing update file, {{timestamp}}"
 
-{{range services}}
-./multiset {{range service .Name}} "{{.Name}}=http://{{.Address}}:{{.Port}}"{{end}}{{end}}
+./multiset {{range services}}{{range service .Name}} "{{.Name}}={{.ID}}=http://{{.Address}}:{{.Port}}"{{end}}{{end}}
 
 
 if [ $? -ne 0 ]; then

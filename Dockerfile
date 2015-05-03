@@ -6,5 +6,6 @@ RUN mv /tmp/consul*/consul-template /consul-template
 
 ADD etcd-set.ctmpl /etcd-set.ctmpl
 ADD run-consule-template.sh /start
+ADD multiset /multiset
 
 ENTRYPOINT /bin/sh /start
